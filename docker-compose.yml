@@ -56,6 +56,23 @@ services:
       - "host.docker.internal:host-gateway"
     depends_on:
       - mysql
+  php8-3:
+    build: './config/php-fpm/8.3'
+    ports:
+      - 9000:9001
+    tty: true
+    volumes:
+      - ./www:/usr/share/nginx/html
+      - ./config/php-fpm/8.3/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+      - ./config/php-fpm/8.3/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
+    networks:
+      - container_net
+    environment:
+      PHP_IDE_CONFIG: "serverName=freud"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - mysql
   # php7-4:
   #   build: './config/php-fpm/7.4'
   #   ports:
@@ -86,17 +103,18 @@ services:
       - ./data/mysql:/var/lib/mysql
     networks:
       - container_net
-  # postgres:
-  #   image: postgres
-  #   environment:
-  #     POSTGRES_USER: root
-  #     POSTGRES_PASSWORD: 123.456
-  #   volumes:
-  #     - ./data/postgres:/var/lib/postgresql/data
-  #   ports:
-  #     - 5432:5432
-  #   networks:
-  #     - container_net
+  
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 123.456
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - container_net
 volumes:
   db_data_mysql:
 networks:
